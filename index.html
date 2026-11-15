@@ -87,7 +87,9 @@ button{font:inherit;color:inherit}
 .kick{display:flex;gap:18px;align-items:center;margin-bottom:10px}
 .kick .tag{border:1px solid var(--rule);padding:2px 8px}
 .giant{font-family:var(--f-display);font-weight:400;text-transform:uppercase;line-height:.84;letter-spacing:.005em;margin:0;font-size:min(13vw,19svh);max-width:100%;text-wrap:balance}
-.hero .giant{font-size:min(30vw,36svh);line-height:.8}
+.lede{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,3.6vw,3.9rem);line-height:1;letter-spacing:.01em;max-width:min(100%,1180px);text-wrap:balance}
+.lede span{white-space:nowrap}
+.lede i{font-style:normal;margin:0 .28em;opacity:.35}
 .node{position:absolute;left:var(--gut);top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--bg);border:1.5px solid var(--ink);z-index:4;transition:background .4s}
 .panel.past .node,.panel.on .node{background:var(--ink)}
 .when{position:absolute;left:calc(var(--gut) + 20px);top:50%;transform:translateY(-140%);z-index:4}
@@ -112,16 +114,11 @@ button{font:inherit;color:inherit}
 /* Hero, approach, contact specifics */
 .hero .down{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,80px)}
 .intro{margin:0;font-size:clamp(1.1rem,1.6vw,1.45rem);line-height:1.4;max-width:34ch}
-.hint{display:flex;align-items:center;gap:12px;margin-top:22px}
-.hint i{width:56px;height:1.5px;background:var(--rule);position:relative;overflow:hidden}
-.hint i::after{content:"";position:absolute;inset:0;background:var(--ink);transform:translateX(-100%);animation:slide 2.4s 1s var(--ease) infinite}
 @keyframes slide{to{transform:translateX(100%)}}
 .index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;align-content:start;border-top:1.5px solid var(--ink);max-width:680px}
-.idx{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:12px;align-items:baseline;padding:9px 0;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer;min-width:0}
+.idx{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;column-gap:12px;align-items:baseline;padding:9px 0;border:0;border-bottom:1px solid var(--rule);background:none;text-align:left;cursor:pointer;min-width:0}
 .idx .muted{grid-column:1/-1;font-size:11px}
 .idx .t{font-family:var(--f-display);font-size:clamp(1.25rem,1.7vw,1.6rem);line-height:1;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.idx .go{transition:transform .35s var(--ease)}
-.idx:hover .go{transform:translateX(5px)}
 .pr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,48px);grid-column:1/-1;max-width:1200px}
 .pr div{border-top:1.5px solid var(--ink);padding-top:14px}
 .pr h3{font-family:var(--f-display);font-weight:400;font-size:clamp(1.8rem,2.6vw,2.6rem);line-height:1;text-transform:uppercase;margin:0 0 10px}
@@ -227,7 +224,8 @@ dialog.story::backdrop{background:var(--bg)}
 .linear .node{left:-1px;top:110px;margin-top:0}
 .linear .when{left:24px;top:84px;transform:none}
 .linear .giant{font-size:min(22vw,7rem)}
-.linear .hero .giant{font-size:34vw}
+.linear .lede{font-size:clamp(2.2rem,10vw,3.4rem)}
+.linear .lede span{white-space:normal}
 .linear .side{justify-items:start;text-align:left}
 .linear .hero .down,.linear .pr{grid-template-columns:1fr}
 .linear .drop{top:16px;right:16px}
@@ -321,14 +319,14 @@ $("#logo").textContent = P.name;
 const SECTIONS = [];
 let html = "";
 
-SECTIONS.push({ key: "hero", label: "Hello" });
+SECTIONS.push({ key: "hero", label: "" });
 html += `<section class="panel hero" style="--h:${HUES[0]}">
   ${bgHTML(P.hero.images, [], true)}
-  <div class="up"><div class="kick caps"><span>${esc(P.hero.kicker)}</span></div><h1 class="giant">${esc(P.hero.title)}</h1></div>
-  <span class="node" aria-hidden="true"></span><span class="when caps">Hello</span>
+  <div class="up"><h1 class="lede">${(P.hero.kicker || "").split("·").map((t, j) => `<span${j ? ' class="muted"' : ""}>${esc(t.trim())}</span>`).join('<i aria-hidden="true">·</i>')}</h1></div>
+  <span class="node" aria-hidden="true"></span>
   <div class="down">
-    <div><p class="intro">${esc(P.hero.intro)}</p><div class="hint caps"><i></i>Scroll</div></div>
-    <div class="index caps" id="index">${P.chapters.map((c, i) => `<button class="idx" type="button" data-i="${i}"><span class="muted">${esc(c.years)}</span><span class="t">${esc(c.title)}</span><span class="go">→</span></button>`).join("")}</div>
+    <div><p class="intro">${esc(P.hero.intro)}</p></div>
+    <div class="index caps" id="index">${P.chapters.map((c, i) => `<button class="idx" type="button" data-i="${i}"><span class="muted">${esc(c.years)}</span><span class="t">${esc(c.title)}</span></button>`).join("")}</div>
   </div>
 </section>`;
 
@@ -341,7 +339,7 @@ P.chapters.forEach((c, i) => {
     <span class="node" aria-hidden="true"></span><span class="when caps">${esc(c.years)}</span>
     <div class="down">
       <div class="meta">
-        <div class="line caps"><span>${esc(c.org)}</span><span class="muted">${esc(c.years)}</span></div>
+        <div class="line caps"><span>${esc(c.org)}</span></div>
         <p class="sum">${esc(c.summary)}</p>
         <ul class="tags caps muted">${(c.tags || []).map(t => `<li>${esc(t)}</li>`).join("")}</ul>
         <div class="row caps"><button class="btn solid open" type="button" data-i="${i}">Read the story <span aria-hidden="true">→</span></button>${linksHTML(c.links)}</div>
@@ -360,7 +358,7 @@ P.chapters.forEach((c, i) => {
     <span class="node" aria-hidden="true"></span><span class="when caps">${esc(e.years)}</span>
     <div class="down">
       <div class="meta">
-        <div class="line caps"><span>${esc(e.org)}</span><span class="muted">${esc(e.years)}</span></div>
+        <div class="line caps"><span>${esc(e.org)}</span></div>
         <p class="sum">${esc(e.summary)}</p>
         <ul class="tags caps muted">${(e.tags || []).map(t => `<li>${esc(t)}</li>`).join("")}</ul>
         <div class="row caps"><button class="btn solid open-edu" type="button" data-e="${i}">Explore the projects <span aria-hidden="true">↓</span></button></div>
