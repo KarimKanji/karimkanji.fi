@@ -275,6 +275,10 @@ dialog.story::backdrop{background:var(--bg)}
 <script src="content.js" charset="utf-8"></script>
 <script>
 const P = window.PORTFOLIO;
+/* content.js lists things oldest first; the site shows the newest first,
+   so moving right (or down) goes back in time. */
+P.chapters.reverse();
+(P.education || []).reverse();
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pad = n => String(n).padStart(2, "0");
@@ -525,7 +529,7 @@ function openStory(i, back){
       <div class="two"><div><span class="caps muted">What came of it</span><ul class="outs">${(s.outcomes || []).map(o => `<li>${esc(o)}</li>`).join("")}</ul></div>
         <div><span class="caps muted">Made with</span><div class="made caps">${(s.made || []).map(m => `<span>${esc(m)}</span>`).join("")}</div>
           ${c.links && c.links.length ? `<div class="row caps" style="margin-top:28px">${linksHTML(c.links)}</div>` : ""}</div></div>
-      ${nx ? `<button class="nextch" type="button" id="snext"><span><span class="caps muted">Next chapter · ${esc(nx.years)}</span><span class="giant" style="display:block">${esc(nx.title)}</span></span><span class="caps">→</span></button>` : ""}
+      ${nx ? `<button class="nextch" type="button" id="snext"><span><span class="caps muted">Further back · ${esc(nx.years)}</span><span class="giant" style="display:block">${esc(nx.title)}</span></span><span class="caps">→</span></button>` : ""}
     </div>${tall ? "</div>" : ""}`;
   sheet.scrollTop = 0;
   sc?.stop(); sc = tall ? null : cycler(sheet.querySelector(".s-hero .bg"), null, null);
@@ -546,7 +550,7 @@ function openStory(i, back){
 /* Education story: the degree's projects on a vertical line, newest at the top.
    Scrolling down the sheet moves further back in time. */
 function openEdu(i, restoreScroll){
-  const e = P.education[i], prev = P.education[i - 1];
+  const e = P.education[i], prev = P.education[i + 1];
   lastFocus = lastFocus || document.activeElement;
   sheet.style.setProperty("--h", HUES[(i + 3) % HUES.length]);
   const multi = (e.images || []).length > 1;
@@ -598,7 +602,7 @@ function openEdu(i, restoreScroll){
   sc?.stop(); sc = cycler(sheet.querySelector(".s-hero .bg"), null, null);
   if (multi){ $("#sn").onclick = () => { sc.stop(); sc.next() }; $("#sp").onclick = () => { sc.stop(); sc.prev() } }
   $("#sx").onclick = closeStory;
-  if (prev) $("#snext").onclick = () => { openEdu(i - 1); goTo(1 + P.chapters.length + i - 1) };
+  if (prev) $("#snext").onclick = () => { openEdu(i + 1); goTo(1 + P.chapters.length + i + 1) };
   sheet.querySelectorAll(".dig-open").forEach(b => b.onclick = () => {
     const pos = sheet.scrollTop;
     openStory(+b.dataset.ch, { label: e.title, go: () => openEdu(i, pos) });

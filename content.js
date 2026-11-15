@@ -20,11 +20,12 @@ window.PORTFOLIO = {
   hero: {
     title: "Karim",
     kicker: "Karim Kanji · Product & digital transformation · M.Sc. Aalto · EN / SV / FI",
-    intro: "I turn complex technical problems into decisions people can act on, by starting with the people stuck inside them. This is the timeline of how I got here. Keep scrolling to move along it.",
+    intro: "I turn complex technical problems into decisions people can act on, by starting with the people stuck inside them. This is the timeline of how I got here, starting with now. Keep scrolling to go back in time.",
     images: ["images/hero.jpg"]
   },
 
-  /* One entry per chapter, oldest first. Add, remove or reorder freely. */
+  /* One entry per chapter, oldest first. The site shows them newest first,
+     so add a new experience at the end of this list. */
   chapters: [
     {
       id: "kauto",
@@ -304,7 +305,7 @@ window.PORTFOLIO = {
     }
   ],
 
-  /* Education, oldest first on the sideways timeline.
+  /* Education, oldest first here; the site shows the newest first.
      "Read the story" opens a vertical timeline of the projects from that degree:
      list them NEWEST FIRST, so scrolling down goes further back in time.
      ref: "<chapter id>" links a project to its full chapter story and borrows its first image.
