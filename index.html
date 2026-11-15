@@ -46,8 +46,7 @@ button{font:inherit;color:inherit}
 
 /* Header */
 .top{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:20;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.top-in{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px calc(var(--gut) - 16px)}
-.logo{font-family:var(--f-display);font-size:34px;line-height:1;text-transform:uppercase;letter-spacing:.01em;text-decoration:none}
+.top-in{display:flex;justify-content:flex-end;align-items:center;gap:16px;padding:20px calc(var(--gut) - 16px)}
 .right{display:flex;align-items:center;gap:clamp(14px,2.6vw,36px)}
 .nav{display:flex;gap:clamp(14px,2.4vw,32px)}
 .nav button{background:none;border:0;padding:4px 0;cursor:pointer;position:relative;opacity:.65;transition:opacity .3s}
@@ -87,9 +86,10 @@ button{font:inherit;color:inherit}
 .kick{display:flex;gap:18px;align-items:center;margin-bottom:10px}
 .kick .tag{border:1px solid var(--rule);padding:2px 8px}
 .giant{font-family:var(--f-display);font-weight:400;text-transform:uppercase;line-height:.84;letter-spacing:.005em;margin:0;font-size:min(13vw,19svh);max-width:100%;text-wrap:balance}
-.lede{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,3.6vw,3.9rem);line-height:1;letter-spacing:.01em;max-width:min(100%,1180px);text-wrap:balance}
-.lede span{white-space:nowrap}
-.lede i{font-style:normal;margin:0 .28em;opacity:.35}
+.lede{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(3.6rem,8.5vw,9rem);line-height:.88;letter-spacing:.005em}
+.lede-sub{margin:.55em 0 0;font-family:var(--f-display);text-transform:uppercase;font-size:clamp(1.3rem,2.3vw,2.4rem);line-height:1.05;letter-spacing:.015em;color:var(--muted)}
+.lede-sub span{white-space:nowrap}
+.lede-sub i{font-style:normal;margin:0 .1em;opacity:.45}
 .node{position:absolute;left:var(--gut);top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--bg);border:1.5px solid var(--ink);z-index:4;transition:background .4s}
 .panel.past .node,.panel.on .node{background:var(--ink)}
 .when{position:absolute;left:calc(var(--gut) + 20px);top:50%;transform:translateY(-140%);z-index:4}
@@ -224,8 +224,8 @@ dialog.story::backdrop{background:var(--bg)}
 .linear .node{left:-1px;top:110px;margin-top:0}
 .linear .when{left:24px;top:84px;transform:none}
 .linear .giant{font-size:min(22vw,7rem)}
-.linear .lede{font-size:clamp(2.2rem,10vw,3.4rem)}
-.linear .lede span{white-space:normal}
+.linear .lede{font-size:clamp(3rem,17vw,5rem)}
+.linear .lede-sub{font-size:clamp(1.15rem,5.4vw,1.6rem)}
 .linear .side{justify-items:start;text-align:left}
 .linear .hero .down,.linear .pr{grid-template-columns:1fr}
 .linear .drop{top:16px;right:16px}
@@ -247,7 +247,6 @@ dialog.story::backdrop{background:var(--bg)}
 
 <header class="top">
   <div class="top-in">
-    <a class="logo" href="#" id="logo">Karim</a>
     <div class="right">
       <nav class="nav caps" id="nav" aria-label="Sections">
         <button type="button" data-go="hero">Hello</button>
@@ -315,14 +314,14 @@ const controlsHTML = c => {
 const linksHTML = links => (links || []).map(l => `<a class="btn" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("");
 
 /* ---------- Build panels ---------- */
-$("#logo").textContent = P.name;
 const SECTIONS = [];
 let html = "";
 
 SECTIONS.push({ key: "hero", label: "" });
 html += `<section class="panel hero" style="--h:${HUES[0]}">
   ${bgHTML(P.hero.images, [], true)}
-  <div class="up"><h1 class="lede">${(P.hero.kicker || "").split("·").map((t, j) => `<span${j ? ' class="muted"' : ""}>${esc(t.trim())}</span>`).join('<i aria-hidden="true">·</i>')}</h1></div>
+  <div class="up">${(() => { const [nm, ...rest] = (P.hero.kicker || P.hero.title || "").split("·").map(t => t.trim());
+    return `<h1 class="lede">${esc(nm)}</h1>${rest.length ? `<p class="lede-sub">${rest.map(t => `<span>${esc(t)}</span>`).join(' <i aria-hidden="true">·</i> ')}</p>` : ""}`; })()}</div>
   <span class="node" aria-hidden="true"></span>
   <div class="down">
     <div><p class="intro">${esc(P.hero.intro)}</p></div>
@@ -496,7 +495,6 @@ panels.forEach(p => io.observe(p));
 
 $("#index").addEventListener("click", e => { const b = e.target.closest(".idx"); if (b) goTo(+b.dataset.i + 1) });
 $("#nav").addEventListener("click", e => { const b = e.target.closest("button"); if (b) goTo(SECTIONS.findIndex(s => s.key === b.dataset.go)) });
-$("#logo").addEventListener("click", e => { e.preventDefault(); goTo(0) });
 addEventListener("keydown", e => {
   if (dlg.open || linear || !["ArrowRight", "ArrowLeft"].includes(e.key)) return;
   e.preventDefault(); goTo(active + (e.key === "ArrowRight" ? 1 : -1));
